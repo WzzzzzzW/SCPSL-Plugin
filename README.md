@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/0e9edc91-2a05-421e-b93b-5c5b9c663e4b)# <div align="center">Wzzzzzz-Plugin</div>
+# <div align="center">Wzzzzzz-Plugin</div>
 <div align="center">一个基于Exiled编写的SCPSL的游戏插件</div>
 
 # 项目介绍
