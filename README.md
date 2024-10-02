@@ -28,4 +28,34 @@
     
    ![image](https://github.com/user-attachments/assets/b461cca3-c526-4c21-a97b-8eb0539906be)
 
-  * 
+
+# 注意事项
+* <b>检查文件依赖</b>
+  * 点击引用查看
+    
+  ![image](https://github.com/user-attachments/assets/1c26dc64-9978-4ccc-b39e-feff4cd2124d)
+
+  * 如果遇到依赖缺失，请到下列目录自行添加
+
+  ![image](https://github.com/user-attachments/assets/f9bab3b4-56d3-4f4e-ad86-02505d428ed1)
+
+# 使用小手册（对部分代码解释）
+| 类名  | 描述 |
+| ------------- | ------------- |
+| Config  | 集中管理插件的地方  |
+| ITEM  | \  |
+| 零碎的功能  | \  |
+| 人物比例  | 基于对RemoteAdminCommandHandler(RA控制面板)的添加  |
+|生成自义定物品| 基于对RemoteAdminCommandHandler(RA控制面板)的添加| 
+
+![image](https://github.com/user-attachments/assets/b68681a5-03e3-4b5f-9a8c-9bf1f4944ebe)
+
+
+
+
+
+
+
+
+
+
