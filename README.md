@@ -1,4 +1,4 @@
-# <div align="center">Wzzzzzz-Plugin</div>
+![image](https://github.com/user-attachments/assets/0e9edc91-2a05-421e-b93b-5c5b9c663e4b)# <div align="center">Wzzzzzz-Plugin</div>
 <div align="center">一个基于Exiled编写的SCPSL的游戏插件</div>
 
 # 项目介绍
@@ -40,6 +40,9 @@
   ![image](https://github.com/user-attachments/assets/f9bab3b4-56d3-4f4e-ad86-02505d428ed1)
 
 # 使用小手册（对部分代码解释）
+
+* <h2>索引</h2>
+  
 | 类名  | 描述 |
 | ------------- | ------------- |
 | Config  | 集中管理插件的地方  |
@@ -48,8 +51,74 @@
 | 人物比例  | 基于对RemoteAdminCommandHandler(RA控制面板)的添加  |
 |生成自义定物品| 基于对RemoteAdminCommandHandler(RA控制面板)的添加| 
 
-![image](https://github.com/user-attachments/assets/b68681a5-03e3-4b5f-9a8c-9bf1f4944ebe)
 
+* <h2>Config.cs</h2>
+
+  * 暂无文档
+
+* <h2>ITEM.cs</h2>
+
+  * 物体生成方法:
+  ```c#
+  ItemPickup itemPickup = ItemPickup.Create({物品ID},{Vector3坐标}, Quaternion.identity);///定义物品
+  itemPickup.Transform.localPosition = Vector3 Vector3;///设置刷新位置
+  itemPickup.GameObject.transform.localScale = Vector3.one * 12f;///设置物体沿xyz轴扩大12倍（放大12倍）
+  itemPickup.Weight = 10f;///设置物体质量
+  NetworkServer.Spawn(itemPickup.GameObject);///生成物体
+  ```
+* <h2>零碎的功能.cs</h2>
+  
+  * 捕获函数调用
+    * 利用此原理，可以在游戏执行某个函数时，插入自己想要执行的东西
+    * 以下示例里，捕获的是`Respawning.RespawnEffectsController`类名下`ServerExecuteEffects`函数
+    * 当捕获到的时候,判断刷新的阵营是否是混沌分裂者，如果利用'foreach'函数遍历所有玩家，给每位玩家发送6秒的广播信息，同时游戏内部大标题提示
+  
+  ```c#
+  public sealed class Patch
+  {
+      [HarmonyPatch(typeof(Respawning.RespawnEffectsController), nameof(Respawning.RespawnEffectsController.ServerExecuteEffects))]
+      public static void Postfix(Respawning.RespawnEffectsController __instance, ref SpawnableTeamType team)
+      {
+          Config config = new Config();
+          if (team == SpawnableTeamType.ChaosInsurgency)
+          {
+              foreach(Exiled.API.Features.Player player in Exiled.API.Features.Player.List)
+              {
+                  player.Broadcast(6,config.CI);
+              }
+              Exiled.API.Features.Cassie.MessageTranslated("检测到不明组织进入设施", config.CI);
+          }
+      }
+  }
+  ```
+  * 读取游戏内置预制体(Perfabs)
+    * 利用此原理，可以在游戏的任意一个地方添加武器柜，门，电板箱等等物品
+    * 下列示例中，利用了`foreach`循环将所有预制体进行读取
+    * 这些预制体利用字典类型存储，所以在创建的时候直接使用`NetworkClient.prefabs[i.Key]`
+    * 另外，在生成的过程中，利用了延迟函数，以防创建过快导致游戏卡死
+    * 具体内容可以自行去研究
+  ```c#
+   public IEnumerator<float> test()
+   {
+       
+       Quaternion rot = Quaternion.Euler(0, 180, 0);
+       int a = 0;
+       foreach (var i in NetworkClient.prefabs)
+       {
+           Vector3 pos = new Vector3(-15 + 2 * a - 80f, 992, -42);
+           Exiled.API.Features.Log.Info(i);
+           if (a >= 45 && a<=75)
+           {
+               //GameObject benchPrefab = GameObject.CreatePrimitive(PrimitiveType.Plane);
+               NetworkServer.Spawn(Object.Instantiate(NetworkClient.prefabs[i.Key], pos, rot));
+               Exiled.API.Features.Log.Info(pos);
+               yield return Timing.WaitForSeconds(0.7f);
+           }
+           a += 1;
+       }
+   }
+  ```
+  
 
 
 
